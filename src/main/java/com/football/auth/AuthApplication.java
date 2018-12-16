@@ -3,18 +3,28 @@ package com.football.auth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.net.InetAddress;
 
-
+@EnableAsync
+@EnableJpaAuditing
+@EnableAutoConfiguration
+@EnableFeignClients(basePackages = {"com.football.*"})
+@ComponentScan(basePackages = "com.football.*")
+@EnableEurekaClient
 @SpringBootApplication
 public class AuthApplication {
     private static final Logger LOGGER = LogManager.getLogger(AuthApplication.class);
 
     public static void main(String[] args) {
-//        SpringApplication.run(AuthApplication.class, args);
         long id = System.currentTimeMillis();
         LOGGER.info("[B][" + id + "] >>>>>>>>>>>>>>>>>>>>>>>>>> Start AuthApplication ...");
         SpringApplication app = new SpringApplication(AuthApplication.class);
@@ -33,6 +43,7 @@ public class AuthApplication {
         LOGGER.info("----------------------------------------------------------");
         LOGGER.info("   Application         : " + env.getProperty("spring.application.name"));
         LOGGER.info("   Url                 : " + protocol + "://" + ipServer + ":" + env.getProperty("server.port") + "/swagger-ui.html");
+        LOGGER.info("   Profile(s)          : " + env.getActiveProfiles()[0]);
         LOGGER.info("----------------------------------------------------------");
 
         LOGGER.info("[E][" + id + "][Duration = " + (System.currentTimeMillis() - id) + "] >>>>>>>>>>>>>>>>>>>>>>>>>> SUCCESS <<<<<<<<<<<<<<<<<<<<<<<<<");
