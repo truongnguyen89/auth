@@ -32,11 +32,11 @@ public class AuthApplication {
         }
         LOGGER.info("----------------------------------------------------------");
         LOGGER.info("   Application         : " + env.getProperty("spring.application.name"));
-        LOGGER.info("   Url                 : " + protocol + "://" + ipServer + ":" + env.getProperty("server.port"));
-        LOGGER.info("   Profile(s)          : " + env.getActiveProfiles()[0]);
+        LOGGER.info("   Url                 : " + protocol + "://" + ipServer + ":" + env.getProperty("server.port") + "/swagger-ui.html");
         LOGGER.info("----------------------------------------------------------");
 
-        LOGGER.info("[E][" + id + "][Duration = " + (System.currentTimeMillis() - id) + "] >>>>>>>>>>>>>>>>>>>>>>>>>> End Start AuthApplication ...");
+        LOGGER.info("[E][" + id + "][Duration = " + (System.currentTimeMillis() - id) + "] >>>>>>>>>>>>>>>>>>>>>>>>>> SUCCESS <<<<<<<<<<<<<<<<<<<<<<<<<");
+
     }
 
 }

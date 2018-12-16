@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
  * To change this template use File | Settings | File Templates.
  */
 public class JwtConfig {
-    @Value("${security.jwt.uri:/auth/**}")
+    @Value("${security.jwt.uri:/api/auth/**}")
     private String Uri;
 
     @Value("${security.jwt.header:Authorization}")
