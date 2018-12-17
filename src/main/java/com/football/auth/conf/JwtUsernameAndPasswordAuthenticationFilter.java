@@ -1,13 +1,10 @@
 package com.football.auth.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.football.auth.service.token.TokenService;
 import com.football.common.cache.Cache;
 import com.football.common.model.auth.Token;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.commons.collections.keyvalue.MultiKey;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,20 +30,19 @@ import java.util.stream.Collectors;
  * To change this template use File | Settings | File Templates.
  */
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    @Autowired
-    TokenService tokenService;
-
+    private DataAccess dataAccess;
     // We use auth manager to validate the user credentials
     private AuthenticationManager authManager;
 
     private final JwtConfig jwtConfig;
 
-    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, JwtConfig jwtConfig) {
+    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authManager, JwtConfig jwtConfig, DataAccess dataAccess) {
         this.authManager = authManager;
         this.jwtConfig = jwtConfig;
+        this.dataAccess = dataAccess;
 
         // By default, UsernamePasswordAuthenticationFilter listens to "/login" path.
-        // In our case, we use "/auth". So, we need to override the defaults.
+        // In our case, we use "/api/auth". So, we need to override the defaults.
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(jwtConfig.getUri(), "POST"));
     }
 
@@ -94,12 +90,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
         //Save token to db & add cache
         Token tokenObject = new Token(Cache.userMap.get(auth.getName()).getId(), token, expiration);
-        try {
-            Token tokenNew = tokenService.create(tokenObject);
-            Cache.tokenMap.put(token, tokenNew);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        dataAccess.createToken(tokenObject);
     }
 
     // A (temporary) class just to represent the user credentials

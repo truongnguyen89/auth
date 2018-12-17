@@ -1,7 +1,9 @@
 package com.football.auth.conf;
 
 import com.football.auth.service.user.UserService;
+import com.football.common.cache.Cache;
 import com.football.common.constant.Constant;
+import com.football.common.util.ArrayListCommon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -32,23 +34,35 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //get user from cache
-        com.football.common.model.user.User user = com.football.common.cache.Cache.userMap.get(username);
-        if (user == null)
+        try {
+            //get user from cache
+            List<com.football.common.model.user.User> userDbList = Cache.userList;
+            if (ArrayListCommon.isNullOrEmpty(userDbList)) {
+                System.out.println("Cache.userList is null");
+                //get user from db
+                userDbList = userService.findByStatus(Constant.STATUS_OBJECT.ACTIVE);
+            }
+            final List<com.football.common.model.user.User> userList = userDbList;
+            for (com.football.common.model.user.User user : userList) {
+                if (user.getUsername().equals(username)) {
+                    String role = "USER";
+                    if (user.getType() == Constant.USER.TYPE.ADMIN)
+                        role = "ADMIN";
+                    // Remember that Spring needs roles to be in this format: "ROLE_" + userRole (i.e. "ROLE_ADMIN")
+                    // So, we need to set it to that format, so we can verify and compare roles (i.e. hasRole("ADMIN")).
+                    List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+                            .commaSeparatedStringToAuthorityList("ROLE_" + role);
+
+                    // The "User" class is provided by Spring and represents a model class for user to be returned by UserDetailsService
+                    // And used by auth manager to verify and check user authentication.
+                    return new User(user.getUsername(), user.getPassword(), grantedAuthorities);
+                }
+            }
             // If user not found. Throw this exception.
             throw new UsernameNotFoundException("Username: " + username + " not found");
-        else {
-            String role = "USER";
-            if (user.getType() == Constant.USER.TYPE.ADMIN)
-                role = "ADMIN";
-            // Remember that Spring needs roles to be in this format: "ROLE_" + userRole (i.e. "ROLE_ADMIN")
-            // So, we need to set it to that format, so we can verify and compare roles (i.e. hasRole("ADMIN")).
-            List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                    .commaSeparatedStringToAuthorityList("ROLE_" + role);
-
-            // The "User" class is provided by Spring and represents a model class for user to be returned by UserDetailsService
-            // And used by auth manager to verify and check user authentication.
-            return new User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new UsernameNotFoundException("Exception " + e.getMessage());
         }
     }
 }
