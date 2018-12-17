@@ -3,6 +3,8 @@ package com.football.auth.service.user;
 import com.football.common.model.user.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * UserRepository: Truong Nguyen
@@ -15,6 +17,8 @@ public interface UserService {
     User create(User user) throws Exception;
 
     Iterable<User> findAll() throws Exception;
+
+    List<User> findByStatus(int status) throws Exception;
 
     User update(User user) throws Exception;
 }

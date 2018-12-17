@@ -5,6 +5,8 @@ import com.football.common.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * UserRepository: Truong Nguyen
@@ -31,5 +33,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user) throws Exception {
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> findByStatus(int status) throws Exception {
+        return userRepository.findByStatus(status);
     }
 }

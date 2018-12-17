@@ -4,6 +4,8 @@ import com.football.common.model.user.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * UserRepository: Truong Nguyen
@@ -13,4 +15,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
+    List<User> findByStatus(int status);
 }

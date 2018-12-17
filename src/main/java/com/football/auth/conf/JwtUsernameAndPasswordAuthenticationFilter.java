@@ -1,14 +1,13 @@
 package com.football.auth.conf;
-import java.io.IOException;
-import java.sql.Date;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.football.auth.service.token.TokenService;
+import com.football.common.cache.Cache;
+import com.football.common.model.auth.Token;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.commons.collections.keyvalue.MultiKey;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,10 +16,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.Date;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 /**
  * Created by IntelliJ IDEA.
  * User: Truong Nguyen
@@ -28,7 +32,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * Time: 10:57 AM
  * To change this template use File | Settings | File Templates.
  */
-public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter   {
+public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    @Autowired
+    TokenService tokenService;
 
     // We use auth manager to validate the user credentials
     private AuthenticationManager authManager;
@@ -72,6 +78,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                                             Authentication auth) throws IOException, ServletException {
 
         Long now = System.currentTimeMillis();
+        Long expiration = jwtConfig.getExpiration() * 1000L;
         String token = Jwts.builder()
                 .setSubject(auth.getName())
                 // Convert to list of strings.
@@ -79,12 +86,20 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .claim("authorities", auth.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + jwtConfig.getExpiration() * 1000))  // in milliseconds
+                .setExpiration(new Date(now + expiration))  // in milliseconds
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret().getBytes())
                 .compact();
 
         // Add token to header
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
+        //Save token to db & add cache
+        Token tokenObject = new Token(Cache.userMap.get(auth.getName()).getId(), token, expiration);
+        try {
+            Token tokenNew = tokenService.create(tokenObject);
+            Cache.tokenMap.put(token, tokenNew);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // A (temporary) class just to represent the user credentials
