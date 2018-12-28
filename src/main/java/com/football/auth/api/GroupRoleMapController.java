@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,6 +41,22 @@ public class GroupRoleMapController {
     public ResponseEntity<?> update(@PathVariable long id,
                                     @Valid @RequestBody GroupRoleMap groupRoleMap) throws Exception {
         return new ResponseEntity<GroupRoleMap>(roleService.updateGroupRoleMap(id, groupRoleMap), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/{id}", method = GET)
+    public ResponseEntity<?> findById(
+            @PathVariable long id) throws Exception {
+        return new ResponseEntity<GroupRoleMap>(roleService.findGroupRoleMapById(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/status/{status}", method = GET)
+    public ResponseEntity<?> findByStatus(@PathVariable int status) throws Exception {
+        return new ResponseEntity<List<GroupRoleMap>>(roleService.findGroupRoleMapByStatus(status), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = GET)
+    public ResponseEntity<?> findAll() throws Exception {
+        return new ResponseEntity<Iterable<GroupRoleMap>>(roleService.findGroupRoleMapAll(), HttpStatus.OK);
     }
 }
 

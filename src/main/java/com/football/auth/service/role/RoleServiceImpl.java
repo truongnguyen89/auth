@@ -5,6 +5,8 @@ import com.football.common.model.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -83,5 +85,80 @@ public class RoleServiceImpl implements RoleService {
     public GroupRoleMap updateGroupRoleMap(long id, GroupRoleMap groupRoleMap) throws Exception {
         groupRoleMap.setId(id);
         return groupRoleMapRepository.save(groupRoleMap);
+    }
+
+    @Override
+    public Role findRoleById(long id) throws Exception {
+        return roleRepository.findOne(id);
+    }
+
+    @Override
+    public UserRole findUserRoleById(long id) throws Exception {
+        return userRoleRepository.findOne(id);
+    }
+
+    @Override
+    public UserGroupRole findUserGroupRoleById(long id) throws Exception {
+        return userGroupRoleRepository.findOne(id);
+    }
+
+    @Override
+    public GroupRole findGroupRoleById(long id) throws Exception {
+        return groupRoleRepository.findOne(id);
+    }
+
+    @Override
+    public GroupRoleMap findGroupRoleMapById(long id) throws Exception {
+        return groupRoleMapRepository.findOne(id);
+    }
+
+    @Override
+    public List<Role> findRoleByStatus(int status) throws Exception {
+        return roleRepository.findByStatus(status);
+    }
+
+    @Override
+    public List<UserRole> findUserRoleByStatus(int status) throws Exception {
+        return userRoleRepository.findByStatus(status);
+    }
+
+    @Override
+    public List<UserGroupRole> findUserGroupRoleByStatus(int status) throws Exception {
+        return userGroupRoleRepository.findByStatus(status);
+    }
+
+    @Override
+    public List<GroupRole> findGroupRoleByStatus(int status) throws Exception {
+        return groupRoleRepository.findByStatus(status);
+    }
+
+    @Override
+    public List<GroupRoleMap> findGroupRoleMapByStatus(int status) throws Exception {
+        return groupRoleMapRepository.findByStatus(status);
+    }
+
+    @Override
+    public Iterable<Role> findRoleAll() throws Exception {
+        return roleRepository.findAll();
+    }
+
+    @Override
+    public Iterable<UserRole> findUserRoleAll() throws Exception {
+        return userRoleRepository.findAll();
+    }
+
+    @Override
+    public Iterable<UserGroupRole> findUserGroupRoleAll() throws Exception {
+        return userGroupRoleRepository.findAll();
+    }
+
+    @Override
+    public Iterable<GroupRole> findGroupRoleAll() throws Exception {
+        return groupRoleRepository.findAll();
+    }
+
+    @Override
+    public Iterable<GroupRoleMap> findGroupRoleMapAll() throws Exception {
+        return groupRoleMapRepository.findAll();
     }
 }

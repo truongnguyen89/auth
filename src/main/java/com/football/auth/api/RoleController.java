@@ -43,20 +43,20 @@ public class RoleController {
         return new ResponseEntity<Role>(roleService.updateRole(id, role), HttpStatus.OK);
     }
 
-//    @RequestMapping(path = "/{id}", method = GET)
-//    public ResponseEntity<?> findById(
-//            @PathVariable long id) throws Exception {
-//        return new ResponseEntity<Role>(roleService.findById(id), HttpStatus.OK);
-//    }
-//
-//    @RequestMapping(path = "/status/{status}", method = GET)
-//    public ResponseEntity<?> findByStatus(@PathVariable int status) throws Exception {
-//        return new ResponseEntity<List<Role>>(roleService.findByStatus(status), HttpStatus.OK);
-//    }
-//
-//    @RequestMapping(method = GET)
-//    public ResponseEntity<?> findAll() throws Exception {
-//        return new ResponseEntity<Iterable<Role>>(roleService.findAll(), HttpStatus.OK);
-//    }
+    @RequestMapping(path = "/{id}", method = GET)
+    public ResponseEntity<?> findById(
+            @PathVariable long id) throws Exception {
+        return new ResponseEntity<Role>(roleService.findRoleById(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/status/{status}", method = GET)
+    public ResponseEntity<?> findByStatus(@PathVariable int status) throws Exception {
+        return new ResponseEntity<List<Role>>(roleService.findRoleByStatus(status), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = GET)
+    public ResponseEntity<?> findAll() throws Exception {
+        return new ResponseEntity<Iterable<Role>>(roleService.findRoleAll(), HttpStatus.OK);
+    }
 
 }

@@ -4,6 +4,8 @@ import com.football.common.model.auth.GroupRole;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -13,4 +15,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface GroupRoleRepository extends CrudRepository<GroupRole, Long> {
+    List<GroupRole> findByStatus(int status);
 }

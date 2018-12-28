@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
@@ -37,5 +39,10 @@ public class UserController {
     public ResponseEntity<?> findById(
             @PathVariable long id) throws Exception {
         return new ResponseEntity<User>(userService.findById(id), HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/status/{status}", method = GET)
+    public ResponseEntity<?> findByStatus(@PathVariable int status) throws Exception {
+        return new ResponseEntity<List<User>>(userService.findByStatus(status), HttpStatus.OK);
     }
 }
