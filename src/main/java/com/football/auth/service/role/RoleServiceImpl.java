@@ -1,6 +1,6 @@
 package com.football.auth.service.role;
 
-import com.football.auth.repository.*;
+import com.football.common.repository.*;
 import com.football.common.model.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

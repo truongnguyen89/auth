@@ -1,7 +1,7 @@
 package com.football.auth.service.token;
 
 import com.football.common.model.auth.Token;
-import com.football.auth.repository.TokenRepository;
+import com.football.common.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

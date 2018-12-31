@@ -1,6 +1,6 @@
 package com.football.auth.service.param;
 
-import com.football.auth.repository.ParamRepository;
+import com.football.common.repository.ParamRepository;
 import com.football.auth.service.BaseService;
 import com.football.common.constant.Constant;
 import com.football.common.database.ConnectionCommon;
